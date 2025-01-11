@@ -40,15 +40,15 @@
 /* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
 
 .light-background {
-  --background-color: #f0f8ff;
+  --background-color: #dffcb0;
   --surface-color: #ffffff;
 }
 
 .dark-background {
-  --background-color: #005cab;
+  --background-color: #8bdf04;
   --default-color: #ffffff;
   --heading-color: #ffffff;
-  --surface-color: #0077de;
+  --surface-color: #8bdf04;
   --contrast-color: #ffffff;
 }
 
@@ -144,7 +144,7 @@ h6 {
 .pulsating-play-btn {
   width: 94px;
   height: 94px;
-  background: radial-gradient(var(--accent-color) 50%, color-mix(in srgb, var(--accent-color), transparent 75%) 52%);
+  background: radial-gradient(#a6ff16 50%, color-mix(in srgb, #a6ff16, transparent 75%) 52%);
   border-radius: 50%;
   display: block;
   position: relative;
@@ -163,7 +163,7 @@ h6 {
   animation-timing-function: steps;
   opacity: 1;
   border-radius: 50%;
-  border: 5px solid color-mix(in srgb, var(--accent-color), transparent 30%);
+  border: 5px solid color-mix(in srgb, #a6ff16, transparent 30%);
   top: -15%;
   left: -15%;
   background: rgba(198, 16, 0, 0);
@@ -262,7 +262,7 @@ h6 {
 }
 
 .header .header-social-links a:hover {
-  color: var(--accent-color);
+  color: var(--background-color);
 }
 
 .header .header-social-links a i {
@@ -290,7 +290,7 @@ h6 {
 /* Global Header on Scroll
 ------------------------------*/
 .scrolled .header {
-  --background-color: rgba(0, 78, 144, 0.9);
+  --background-color: #8bdf04;
 }
 
 /*--------------------------------------------------------------
@@ -731,7 +731,7 @@ h6 {
   right: 15px;
   bottom: 15px;
   z-index: 99999;
-  background-color: var(--accent-color);
+  background-color: #8bdf04;
   width: 40px;
   height: 40px;
   border-radius: 4px;
@@ -908,7 +908,7 @@ section,
 
 .hero .btn-get-started {
   color: var(--contrast-color);
-  background: var(--accent-color);
+  background: #629f01;
   font-family: var(--heading-font);
   font-weight: 500;
   font-size: 16px;
@@ -916,11 +916,11 @@ section,
   padding: 8px 40px;
   border-radius: 50px;
   transition: 0.5s;
-  border: 2px solid var(--accent-color);
+  border: 2px solid #a6ff16;
 }
 
 .hero .btn-get-started:hover {
-  background-color: color-mix(in srgb, var(--accent-color) 90%, white 15%);
+  background-color: color-mix(in srgb, #bbfc52 90%, white 15%);
 }
 
 /*--------------------------------------------------------------
@@ -1795,6 +1795,24 @@ section,
   margin-bottom: 10px;
   border-radius: 5px;
 }
+
+.btn-submit {
+  color: var(--contrast-color);
+  background: #629f01;
+  font-family: var(--heading-font);
+  font-weight: 500;
+  font-size: 16px;
+  display: inline-block;
+  padding: 8px 40px;
+  border-radius: 50px;
+  transition: 0.5s;
+  border: 2px solid #a6ff16;
+}
+
+.container-klas h2 {
+  color: #6cae02;
+}
+
 /*--------------------------------------------------------------
 # Starter Section Section
 --------------------------------------------------------------*/

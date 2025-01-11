@@ -27,6 +27,13 @@
   <!-- Main CSS File -->
   <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
 
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css"
+  rel="stylesheet">
+    <link
+  href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css"
+  rel="stylesheet">
+
 </head>
 
 <body class="index-page">
@@ -75,16 +82,21 @@
     <!-- ======== Section Klasifikasi ======== -->
     <section id="klasifikasi" class="klasifikasi section light-background">
       
-      <div class="container section-title" data-aos="fade-up">
+      <div class="container-klas section-title" data-aos="fade-up">
           <h2>Klasifikasi</h2>
         
         <div class="mb-3">
           <label for="formFile" class="form-label">Halaman ini untuk memprediksi lalu lintas jaringan menggunakan 
             dataset testing yang tidak diketahui model sebelumnya.</label>
-          <input class="form-control" type="file" id="formFile">
+      
+          <form id="uploadForm" method="post" enctype="multipart/formdata">
+              <input type="file" name="dataset" id="dataset" accept=".csv, .xls, .xlsx" required>
+              
         </div>
+              <button type="submit" class="btn-submit btn-primary ">Submit</button>
+          </form>
 
-        <button type="button" class="btn btn-primary ">Submit</button>
+        <!-- <button type="button" class="btn btn-primary ">Submit</button> -->
         <!-- <form action="forms/newsletter.php" method="post" class="php-email-form">
           <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
           <div class="loading">Loading</div>
@@ -92,6 +104,10 @@
           <div class="sent-message">Your subscription request has been sent. Thank you!</div>
         </form> -->
         <br>
+           <!-- <div id="loading" class="text-center" style="display: 
+none;">Loading...</div>  -->
+        <!-- Hasil Testing --> 
+        <table id="data-table" class="display"></table> 
       </div>
     </section>
     <!-- ======== End Section Klasifikasi ======== -->
@@ -104,10 +120,26 @@
         </div>
         <div class="row">
           <div class="col-lg-4" data-aos="fade-up" data-aos-delay="00">
-            <div class="card filter-app" style="width: 27rem">
+            <div class="card filter-app" >
               <img src="{{ url_for('static', filename='assets/img/perbandingan.png') }}" alt="Perbandingan" style="width: 100%; max-width: 800px; height: auto;">
               <div class="card-body">
                 <h5 class="card-title text-center">Perbandingan</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="00">
+            <div class="card filter-app" >
+              <img src="{{ url_for('static', filename='assets/img/kurva.png') }}" alt="Perbandingan" style="width: 100%; max-width: 800px; height: auto;">
+              <div class="card-body">
+                <h5 class="card-title text-center">Kurva ROC</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="00">
+            <div class="card filter-app" >
+              <img src="{{ url_for('static', filename='assets/img/classification.png') }}" alt="Perbandingan" style="width: 100%; max-width: 800px; height: auto;">
+              <div class="card-body">
+                <h5 class="card-title text-center">Classification Report</h5>
               </div>
             </div>
           </div>
@@ -190,6 +222,14 @@
   <!-- Preloader -->
   <div id="preloader"></div>
 
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- DataTables --> 
+  <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script> 
+
+  <!-- DataTables -->
+  <scriptsrc="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></scriptsrc=>
+
   <!-- Vendor JS Files -->
   <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script> 
@@ -203,6 +243,89 @@
 
   <!-- Template Main JS File -->
   <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script> 
+
+  <script>
+    $(document).ready(function () {
+            // Event listener untuk uploadForm
+            $("#uploadForm").submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var fileInput = document.getElementById('dataset');
+            var file = fileInput.files[0];
+            formData.append('file', file);
+            // Tampilkan elemen loading
+            $("#loading").show();
+            $.ajax({
+            url: "/predict",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+            // Sembunyikan elemen loading
+            //  $("#loading").hide();
+
+            // Tampilkan hasil di tabel
+            displayResult(response);
+            },
+            error: function (error) {
+            console.log("Error:", error);
+            // Sembunyikan elemen loading pada error
+            //  $("#loading").hide();
+            }
+            });
+            });
+ // Inisialisasi DataTable
+            function displayResult(data) {
+            // tabel dengan ID data-table
+            $('#data-table').DataTable({
+            destroy: true,
+            data: data,
+            columns: [
+            { "data": "protocol_type", "title": "Protocol Type" },
+            { "data": "flag", "title": "Flag" },
+            { "data": "wrong_fragment", "title": "Wrong Fragment" },
+            { "data": "hot", "title": "Hot" },
+            { "data": "num_compromised", "title": "Num Compromised" },
+            {
+            "data": null, "title": "..."
+            },
+            { "data": "class", "title": "Class" },
+            { "data": "prediksi", "title": "Prediksi" }
+            ],
+            pageLength: 10,
+            pagingType: "simple_numbers",
+            ordering: false,
+            createdRow: function (row, data, dataIndex) {
+            // Mengganti seluruh sel pada baris kecuali kolom yang tetap
+            ditampilkan
+            var cells = $('td', row);
+            for (var i = 5; i < cells.length - 2; i++) {
+            $(cells[i]).html('...');
+            }
+            },
+            columnDefs: [
+            {
+            targets: [2,3,4],
+            render: function (data, type, row, meta) {
+            // Batasi angka menjadi 4 digit di belakang koma
+            return type === 'display' ? parseFloat(data).toFixed(4) : data;
+            }
+            }
+            ],
+            language: {
+            info: "Menampilkan START sampai END dari _TOTAL_entri",
+            paginate: {
+            first: "Pertama",
+            last: "Terakhir",
+            next: "Selanjutnya",
+            previous: "Sebelumnya",
+            },
+            },
+            });
+            }
+            });
+</script>
 
 </body>
 
